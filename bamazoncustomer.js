@@ -18,12 +18,12 @@ var connection = mysql.createConnection({
 //Connect to the mysql server and sql database
 connection.connect(function(err) {
   if (err) throw err;
-//run the start function after the connection is made to prompt the user
+//run the Display function and Purchase function after the connection is made to prompt the user
   DisplayItem();
   PurchaseItem();
 });
 
-//function that prints out current items available
+//Function that prints out current items available
 function DisplayItem() {
     connection.query('SELECT * FROM products', function(err, res) {  //query all from the products table
             if (err) throw err;
@@ -89,7 +89,6 @@ function PurchaseItem() {
 
           //Calculates the total price by multiplying quantity requested by price of item stored in products table and stores in a variable
           var totalPrice = quantity * results[0].price;
-
 
           //Displays total for selected item to the user
           console.log("Your total for this product is :" + "$" + (quantity * results[0].price).toFixed(2));
