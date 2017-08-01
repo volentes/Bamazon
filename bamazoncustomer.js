@@ -53,7 +53,7 @@ function PurchaseItem() {
           return false;
         }
       },
-      // Second prompt - Asking how many units the user would like to buy
+      // Second prompt - Asks how many units the user would like to buy
       {
         name: "quantity",
         type: "input",
@@ -79,23 +79,27 @@ function PurchaseItem() {
 				var stock_quantity = results[0].stock_quantity;
         //If user input for requested quantity is greater than what is in stock - displays message
 				if (stock_quantity < quantity) {
-					console.log("Sorry! There is not enough of this item in stock, to fullfill that request!");
+					console.log("Sorry! There is not enough of this item in stock to fullfill that request!");
 
         //The requested quantity is less than the stock_quantity and the order can be fullfilled
 				} else{
-          //Subtract the requested quantity from the quantity in stock
-					stock_quantity -= quantity;
+          // Calculates updated stock quantity by subtracting requested quantity from stock quantity
+					var newQuantity = stock_quantity - quantity;
+            console.log("Remaining quantity in stock is : " + newQuantity);
 
           //Calculates the total price by multiplying quantity requested by price of item stored in products table and stores in a variable
           var totalPrice = quantity * results[0].price;
+
 
           //Displays total for selected item to the user
           console.log("Your total for this product is :" + "$" + (quantity * results[0].price).toFixed(2));
 
           //Calculates and displays the order total
-          orderTotal += (parseFloat(totalPrice));
-          console.log("Your order total is : " + "$" + orderTotal.toFixed(2));
+          console.log("Your order total is : " + "$" + totalPrice.toFixed(2));
         };
-    /* will need to write code that queries the database and replaces the stock_quantity value with new value using the
-    UPDATE method */
-  };
+      //Query database once more to update table to reflect change in stock quanity due to user purchase
+        connection.query("UPDATE products SET ? WHERE ?", [{ stock_quantity: newQuantity},{ item_id: itemID }],function(err,res){
+            if(err) throw err;
+        });
+
+  })})};
