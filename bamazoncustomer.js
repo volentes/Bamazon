@@ -2,15 +2,15 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 
-// create the connection information for the sql database
+//Creates the connection information for the sql database
 var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
 
-  // Your username
+  //Username
   user: "root",
 
-  // Your password
+  //Password
   password: "",
   database: "bamazon_db"
 });
@@ -79,11 +79,7 @@ function PurchaseItem() {
 				var stock_quantity = results[0].stock_quantity;
         //If user input for requested quantity is greater than what is in stock - displays message
 				if (stock_quantity < quantity) {
-					console.log("Sorry! There is not enough of this item in stock, to fullfill that request!" + "\:\(";
-
-        /*Perhaps variation of this code would be to seperate the two prompts into two seperate functions and then call the
-        the function that asks the quantity one more time here to give the user the chance to enter a quantity lower than initial
-        entry - so as not to end the sale here. */
+					console.log("Sorry! There is not enough of this item in stock, to fullfill that request!");
 
         //The requested quantity is less than the stock_quantity and the order can be fullfilled
 				} else{
