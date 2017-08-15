@@ -11,28 +11,49 @@ var connection = mysql.createConnection({
   user: "root",
 
   //Password
-  password: "",
+  password: "G1n&J00$3",
   database: "bamazon_db"
 });
 
 //Connect to the mysql server and sql database
 connection.connect(function(err) {
   if (err) throw err;
-//run the Display function and Purchase function after the connection is made to prompt the user
+  
+  //run the Display function and Purchase function after the connection is made to prompt the user
   DisplayItem();
   PurchaseItem();
 });
 
 //Function that prints out current items available
 function DisplayItem() {
-    connection.query('SELECT * FROM products', function(err, res) {  //query all from the products table
-            if (err) throw err;
-        for (var i = 0; i < res.length; i++){
-        console.log('_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ');
-        console.log(res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity);
-        console.log('_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ');
+  // Always practice good, consistent formatting.
+  // Others who read your code will thank you.
+  // There are editor tools that can help you with hthis:
+  //   see 'html/css/js-beautify'
+  connection.query('SELECT * FROM products', function(err, res) {  //query all from the products table
+    if (err) throw err;
+    
+    // A better way of creating your horizontal-rules 
+    // would be to create them dynamically via a function.
+    // See the `hr` function just below
+    hr(80, '-')
+    // I think this makes for a more readable experience
+    for (var i = 0; i < res.length; i++){
+      console.log(res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity);
     }
+    hr(80, "-");
+    
   });
+}
+
+function hr(len, char) {
+  let rule = "";
+
+  for (var i = 0; i < len; i++) {
+    rule += char;
+  }
+
+  console.log(rule);
 }
 
 // Series of prompts (Total of 2 prompts)
