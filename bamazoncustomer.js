@@ -21,7 +21,6 @@ connection.connect(function(err) {
   
   //run the Display function and Purchase function after the connection is made to prompt the user
   DisplayItem();
-  PurchaseItem();
 });
 
 //Function that prints out current items available
@@ -44,6 +43,12 @@ function DisplayItem() {
     }
     hr(80, "-");
     
+    // I think you want to call PurchasItem from the
+    // callback to the mysql/database action function.
+    // Althought calling it from above in the 
+    // connection.connect method worked it may introduce
+    // bugs as your code gets more complex.
+    PurchaseItem();    
   });
 }
 
