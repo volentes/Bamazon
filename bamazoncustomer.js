@@ -11,28 +11,55 @@ var connection = mysql.createConnection({
   user: "root",
 
   //Password
-  password: "",
+  password: "G1n&J00$3",
   database: "bamazon_db"
 });
 
 //Connect to the mysql server and sql database
 connection.connect(function(err) {
   if (err) throw err;
-//run the Display function and Purchase function after the connection is made to prompt the user
+  
+  //run the Display function and Purchase function after the connection is made to prompt the user
   DisplayItem();
-  PurchaseItem();
 });
 
 //Function that prints out current items available
 function DisplayItem() {
-    connection.query('SELECT * FROM products', function(err, res) {  //query all from the products table
-            if (err) throw err;
-        for (var i = 0; i < res.length; i++){
-        console.log('_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ');
-        console.log(res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity);
-        console.log('_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ');
+
+  // Always practice good, consistent formatting.
+  // Others who read your code will thank you.
+  // There are editor tools that can help you with hthis:
+  //   see 'html/css/js-beautify'
+  connection.query('SELECT * FROM products', function(err, res) {  //query all from the products table
+    if (err) throw err;
+    
+    // A better way of creating your horizontal-rules 
+    // would be to create them dynamically via a function.
+    // See the `hr` function just below
+    hr(80, '-')
+    // I think this makes for a more readable experience
+    for (var i = 0; i < res.length; i++){
+      console.log(res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity);
     }
+    hr(80, "-");
+    
+    // I think you want to call PurchasItem from the
+    // callback to the mysql/database action function.
+    // Althought calling it from above in the 
+    // connection.connect method worked it may introduce
+    // bugs as your code gets more complex.
+    PurchaseItem();    
   });
+}
+
+function hr(len, char) {
+  let rule = "";
+
+  for (var i = 0; i < len; i++) {
+    rule += char;
+  }
+
+  console.log(rule);
 }
 
 // Series of prompts (Total of 2 prompts)
@@ -46,6 +73,7 @@ function PurchaseItem() {
         type: "input",
         message: "What is the id of the item you would like to purchase? ",
         // Validates that the user entered a value
+        // Great job including validation 👍
         validate: function(value) {
           if (isNaN(value) === false) {
             return true;
@@ -69,14 +97,19 @@ function PurchaseItem() {
     .then(function(answer) {
       //Stores the user's itemID input in a variable
       var itemID = answer.itemID;
+
       //Stores the user's quantity input in a variable
       var quantity = answer.quantity;
+
       //Connects to bamazon_db and queries the product table for item_id that matches the user's itemid input
+      // Nice job choosing to use the mysql package's escape syntax i.e. '?'
 			connection.query('SELECT * FROM products WHERE item_id=?', [itemID], function(err, results){
         //Checks for errors
         if (err) throw err;
+        
         //Stores stock_quantity in a varible
-				var stock_quantity = results[0].stock_quantity;
+        var stock_quantity = results[0].stock_quantity;
+        
         //If user input for requested quantity is greater than what is in stock - displays message
 				if (stock_quantity < quantity) {
 					console.log("Sorry! There is not enough of this item in stock to fullfill that request!");
@@ -96,7 +129,8 @@ function PurchaseItem() {
           //Calculates and displays the order total
           console.log("Your order total is : " + "$" + totalPrice.toFixed(2));
         };
-      //Query database once more to update table to reflect change in stock quanity due to user purchase
+        
+        //Query database once more to update table to reflect change in stock quanity due to user purchase
         connection.query("UPDATE products SET ? WHERE ?", [{ stock_quantity: newQuantity},{ item_id: itemID }],function(err,res){
             if(err) throw err;
         });
